@@ -3,11 +3,13 @@ import PageModel from "../database.js";
 
 const pageRouter = Router();
 
+// get alle sider
 pageRouter.get("/", async (req, res) => {
   const test = await PageModel.find({});
   res.json(test);
 });
 
+// get én side ud fra pageTitle
 pageRouter.get("/:pageTitle", async (req, res) => {
   const pageTitle = req.params.pageTitle;
 
@@ -25,7 +27,7 @@ pageRouter.get("/:pageTitle", async (req, res) => {
 });
 
 pageRouter.patch("/update/:pageTitle", async (req, res) => {
-//   const pageTitle = req.params.pageTitle;
+  //   const pageTitle = req.params.pageTitle;
   const pageTitle = req.params.pageTitle;
   const updateData = req.body;
   console.log(updateData);
@@ -66,7 +68,6 @@ pageRouter.patch("/update/:pageTitle", async (req, res) => {
 //     res.status(500).json({ message: err.message });
 //   }
 // });
-
 
 // KUN TIL TEST!!!
 // pageRouter.get("/post", async (req, res) => {
