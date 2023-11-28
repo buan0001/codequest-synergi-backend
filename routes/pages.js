@@ -8,3 +8,4 @@ pageRouter.get("/", async (req, res) => {
   res.json(test);
 });
 
+export default pageRouter;
