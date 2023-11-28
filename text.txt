@@ -1,19 +1,8 @@
-import { Router } from "express";
-import PageModel from "../database.js";
-
-const frontpageRouter = Router();
-
-frontpageRouter.get("/", async (req, res) => {
-  const test = await PageModel.find({});
-  res.json(test);
-});
-
 frontpageRouter.get("/frontPost", async (req, res) => {
   const newPage = new PageModel({
     pageTitle: "Synergi Human Resource Management",
     pageBody: [
       {
-        title: "",
         body: `Ejes og drives af chefkonsulent Peter Sass Hansen-Skovmoes. Beskæftiger sig især med proceskonsultation, coaching af enkeltpersoner eller team, teamudvikling, netværksfacilitering og interne skræddersyede forløb, f. eks. leder- og ledelsesudvikling, coaching- og proceskonsulentuddannelse. Løser opgaver for både offentlige og private organisationer. Indgår i netværk med og samarbejder med en række andre mindre konsulentfirmaer. Læs her om vores teoretiske ståsted og hvordan samarbejdet med kunden typisk gribes an. Du er meget velkommen til at tage kontakt for at høre mere om vores ydelser og arbejdsformer.`,
         placement: 1
       },
@@ -76,33 +65,4 @@ Se videoreportagen fra træffet i 2018 her, 2017 her og for 2016 her Videoreport
       }
     ]
   });
-
-  newPage.save().then((savedPage) => {
-    console.log("frontpage saved", savedPage);
-  });
 });
-
-// test create
-frontpageRouter.get("/post", async (req, res) => {
-  const newPage = new PageModel({
-    pageTitle: "En anden side igen",
-    pageBody: [{ title: "Hej titel igen", body: "Dette er en anden side", image: "lol", placement: 3 }]
-  });
-
-  newPage.save().then((savedPage) => {
-    console.log("page saved", savedPage);
-  });
-});
-
-// test update
-frontpageRouter.get("/patch", async (req, res) => {
-  const newPage = {
-    pageTitle: "Noget nyt"
-  };
-
-  PageModel.updateOne({ pageTitle: "Forside" }, newPage).then((savedPage) => {
-    console.log("page saved", savedPage);
-  });
-});
-
-export default frontpageRouter;
