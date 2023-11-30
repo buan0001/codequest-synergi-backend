@@ -1,12 +1,12 @@
 import { Router } from "express";
-import PageModel from "../database.js";
+import { PageModel } from "../database.js";
 
 const pageRouter = Router();
 
 // get alle sider
 pageRouter.get("/", async (req, res) => {
-  const test = await PageModel.find({});
-  res.json(test);
+  const data = await PageModel.find({});
+  res.json(data);
 });
 
 // get én side ud fra pageTitle
