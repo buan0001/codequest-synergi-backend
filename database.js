@@ -13,4 +13,26 @@ const pageSchema = new mongoose.Schema({
 
 const PageModel = mongoose.model("page", pageSchema);
 
-export default PageModel;
+const publishedSchema = new mongoose.Schema({
+  title: { type: String, required: true, unique: true },
+  release: { type: Date, required: true },
+  releaseYear: { type: Number, required: true },
+  publisher: { type: String, required: true },
+  authors: {
+    type: [
+      {
+        firstname: { type: String, required: true },
+        lastname: { type: String, required: true }
+      }
+    ],
+    required: true
+  },
+  link: { type: String },
+  pay: { type: Boolean, default: false },
+  resume: { type: String }
+});
+
+const BookModel = mongoose.model("book", publishedSchema);
+const ArticleModel = mongoose.model("article", publishedSchema);
+
+export { PageModel, BookModel, ArticleModel };
