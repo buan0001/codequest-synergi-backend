@@ -8,6 +8,9 @@ frontpageRouter.get("/", async (req, res) => {
   res.json(test);
 });
 
+
+
+// no touch!! - it posts/create 
 frontpageRouter.get("/frontPost", async (req, res) => {
   const newPage = new PageModel({
     pageTitle: "Synergi Human Resource Management",
@@ -82,11 +85,11 @@ Se videoreportagen fra træffet i 2018 her, 2017 her og for 2016 her Videoreport
   });
 });
 
-// test create
+// no touch!! - test create
 frontpageRouter.get("/post", async (req, res) => {
   const newPage = new PageModel({
     pageTitle: "En anden side igen",
-    pageBody: [{ title: "Hej titel igen", body: "Dette er en anden side", image: "lol", placement: 3 }]
+    pageBody: [{ title: "Hej titel", body: "Dette er en anden side", image: "lol", placement: 30 }]
   });
 
   newPage.save().then((savedPage) => {
@@ -94,7 +97,7 @@ frontpageRouter.get("/post", async (req, res) => {
   });
 });
 
-// test update
+// no touch!! - test update
 frontpageRouter.get("/patch", async (req, res) => {
   const newPage = {
     pageTitle: "Noget nyt"
