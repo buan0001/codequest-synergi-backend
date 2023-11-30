@@ -41,13 +41,33 @@ bookRouter.post("/", async (req, res) => {
       resume: data.resume
     });
 
-    console.log(newBook);
+    // console.log(newBook);
 
     const savedBook = await newBook.save();
+
+    if (!savedBook) {
+      return res.status(404).json({ message: "something went wrong - book not saved" });
+    }
 
     res.status(201).json(savedBook);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+bookRouter.patch("/:bookTitle", async (req, res) => {
+  const bookTitle = req.params.bookTitle;
+  const updateData = req.body;
+
+  try {
+    const updatedBook = await BookModel.findOneAndUpdate({ title: bookTitle }, updateData, { new: true });
+
+    if (!updatedBook) {
+      return res.status(404).json({ message: "Document not found - and not Updated" });
+    }
+    res.json(updatedBook);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
