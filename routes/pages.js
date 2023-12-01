@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {PageModel, TestModel} from "../database.js";
+import {PageModel} from "../database.js";
 
 const pageRouter = Router();
 
@@ -11,10 +11,11 @@ pageRouter.get("/", async (req, res) => {
 
 // get én side ud fra pageTitle
 pageRouter.get("/:pageTitle", async (req, res) => {
+     
   const pageTitle = req.params.pageTitle;
 
   try {
-    const result = await TestModel.findOne({ pageTitle });
+    const result = await PageModel.findOne({ pageTitle });
 
     if (!result) {
       return res.status(404).json({ message: `Data not found for pageTitle: ${pageTitle}` });
@@ -45,37 +46,12 @@ pageRouter.patch("/", async (req, res) => {
   }
 });
 
-// // GET request to fetch a specific pageBody's title
-// pageRouter.get("/pageBodyTitle/:pageTitle", async (req, res) => {
-//   const pageTitle = req.params.pageTitle;
-
-//   try {
-//     // Query the database to find the pageTitle and retrieve its pageBody's title
-//     const page = await PageModel.findOne({ pageTitle });
-
-//     if (!page) {
-//       return res.status(404).json({ message: "Page not found" });
-//     }
-
-//     // Extract the title from the first pageBody element (assuming it's an array)
-//     const pageBodyTitle = page.pageBody[0].title; // Adjust this according to your data structure
-
-//     if (!pageTitle) {
-//       return res.status(404).json({ message: "Page title not found" });
-//     }
-
-//     res.json({ pageBodyTitle });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
 // KUN TIL TEST!!!
 pageRouter.post("/", async (req, res) => {
   // console.log("POSTING NEW PAGE");
   console.log("BODY", req.body);
   const data = req.body;
-  const newPage = new TestModel({
+  const newPage = new PageModel({
     pageTitle: data.pageTitle,
     pageBody: data.pageBody,
   });
