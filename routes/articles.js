@@ -71,4 +71,19 @@ articleRouter.patch("/:articleTitle", async (req, res) => {
   }
 });
 
+articleRouter.delete("/:articleTitle", async (req, res) => {
+  const articleTitle = req.params.articleTitle;
+
+  try {
+    const deleteArticle = await ArticleModel.findOneAndDelete({ title: articleTitle });
+
+    if (!articleTitle) {
+      return res.status(404).json({ message: "Document not found - and not Deleted" });
+    }
+    res.json(deleteArticle);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default articleRouter;

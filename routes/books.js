@@ -71,4 +71,19 @@ bookRouter.patch("/:bookTitle", async (req, res) => {
   }
 });
 
+bookRouter.delete("/:bookTitle", async (req, res) => {
+  const bookTitle = req.params.bookTitle;
+
+  try {
+    const deleteBook = await BookModel.findOneAndDelete({ title: bookTitle });
+
+    if (!deleteBook) {
+      return res.status(404).json({ message: "Document not found - and not Deleted" });
+    }
+    res.json(deleteBook);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default bookRouter;
