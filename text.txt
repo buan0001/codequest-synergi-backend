@@ -66,3 +66,16 @@ Se videoreportagen fra træffet i 2018 her, 2017 her og for 2016 her Videoreport
     ]
   });
 });
+
+
+{
+    "title": "en test bog",
+    "release": "2023-11-30",
+    "releaseYear": 2023,
+    "publisher": "Lise",
+    "authors": [{"firstname": "Lise", "lastname": "test"}],
+    "link": "Et link er her",
+    "pay": true,
+    "resume": "her er en tekst der beskriver hvad der står i bogen"
+
+}
