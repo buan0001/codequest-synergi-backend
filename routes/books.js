@@ -55,12 +55,12 @@ bookRouter.post("/", async (req, res) => {
   }
 });
 
-bookRouter.patch("/:bookTitle", async (req, res) => {
-  const bookTitle = req.params.bookTitle;
+bookRouter.patch("/", async (req, res) => {
+  // const bookTitle = req.params.bookTitle;
   const updateData = req.body;
 
   try {
-    const updatedBook = await BookModel.findOneAndUpdate({ title: bookTitle }, updateData, { new: true });
+    const updatedBook = await BookModel.findOneAndUpdate({ title: updateData.pageTitle }, updateData.resume, { new: true });
 
     if (!updatedBook) {
       return res.status(404).json({ message: "Document not found - and not Updated" });

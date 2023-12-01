@@ -43,4 +43,4 @@ const publishedSchema = new mongoose.Schema({
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 
-export { PageModel, BookModel, ArticleModel };
+export { PageModel, BookModel, ArticleModel, TestModel };

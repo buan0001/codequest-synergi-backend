@@ -26,14 +26,15 @@ pageRouter.get("/:pageTitle", async (req, res) => {
   }
 });
 
-pageRouter.patch("/:pageTitle", async (req, res) => {
+// pageRouter.patch("/:pageTitle", async (req, res) => {
+pageRouter.patch("/", async (req, res) => {
   //   const pageTitle = req.params.pageTitle;
-  const pageTitle = req.params.pageTitle;
+  // const pageTitle = req.params.pageTitle;
   const updateData = req.body;
   console.log(updateData);
 
   try {
-    const updatedPage = await PageModel.findOneAndUpdate({ pageTitle: pageTitle }, updateData, { new: true });
+    const updatedPage = await PageModel.findOneAndUpdate({ pageTitle: updateData.pageTitle }, updateData.pageBody, { new: true });
 
     if (!updatedPage) {
       return res.status(404).json({ message: "Document not found - and not Updated" });
