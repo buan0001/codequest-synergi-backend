@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import frontpageRouter from "./routes/frontpage.js";
+// import frontpageRouter from "./routes/frontpage.js";
 import pageRouter from "./routes/pages.js";
 // import connection from "database.js";
 

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import PageModel from "../database.js";
 
-const frontpageRouter = Router();
+// const frontpageRouter = Router();
 
 frontpageRouter.get("/", async (req, res) => {
   const test = await PageModel.find({});
@@ -108,4 +108,4 @@ frontpageRouter.get("/patch", async (req, res) => {
   });
 });
 
-export default frontpageRouter;
+// export default frontpageRouter;

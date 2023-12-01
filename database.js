@@ -11,6 +11,15 @@ const pageSchema = new mongoose.Schema({
   updatedLast: { type: Date, default: new Date() }
 });
 
-const PageModel = mongoose.model("page", pageSchema);
+const testSchema = new mongoose.Schema({
+  pageTitle: {type:String, required: true},
+  createdAt: {type:Date, immutable:false, default: new Date()},
+  lastUpdated: {type:Date, default: new Date()},
+  pageBody: {type: String}
+})
 
-export default PageModel;
+const PageModel = mongoose.model("page", pageSchema);
+const TestModel = mongoose.model("test", testSchema)
+
+// export {TestModel};
+export {PageModel, TestModel};

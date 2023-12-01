@@ -1,5 +1,5 @@
 import { Router } from "express";
-import PageModel from "../database.js";
+import {PageModel, TestModel} from "../database.js";
 
 const pageRouter = Router();
 
@@ -14,7 +14,7 @@ pageRouter.get("/:pageTitle", async (req, res) => {
   const pageTitle = req.params.pageTitle;
 
   try {
-    const result = await PageModel.findOne({ pageTitle });
+    const result = await TestModel.findOne({ pageTitle });
 
     if (!result) {
       return res.status(404).json({ message: `Data not found for pageTitle: ${pageTitle}` });
@@ -26,7 +26,7 @@ pageRouter.get("/:pageTitle", async (req, res) => {
   }
 });
 
-pageRouter.patch("/update/:pageTitle", async (req, res) => {
+pageRouter.patch("/:pageTitle", async (req, res) => {
   //   const pageTitle = req.params.pageTitle;
   const pageTitle = req.params.pageTitle;
   const updateData = req.body;
@@ -70,15 +70,23 @@ pageRouter.patch("/update/:pageTitle", async (req, res) => {
 // });
 
 // KUN TIL TEST!!!
-// pageRouter.get("/post", async (req, res) => {
-//   const newPage = new PageModel({
-//     pageTitle: "En anden side igen",
-//     pageBody: [{ title: "Hej titel", body: "Dette er en anden side", image: "lol", placement: 30 }]
-//   });
-
-//   newPage.save().then((savedPage) => {
-//     console.log("page saved", savedPage);
-//   });
-// });
+pageRouter.post("/", async (req, res) => {
+  // console.log("POSTING NEW PAGE");
+  console.log("BODY", req.body);
+  const data = req.body;
+  const newPage = new TestModel({
+    pageTitle: data.pageTitle,
+    pageBody: data.pageBody,
+  });
+  try {
+    // console.log("NEW PAGE", newPage);
+    newPage.save().then(savedPage => {
+      console.log("page saved", savedPage);
+      res.json(savedPage);
+    });
+  } catch (error) {
+    res.json(error);
+  }
+});
 
 export default pageRouter;
