@@ -13,7 +13,7 @@ const pageSchema = new mongoose.Schema({
 
 const testSchema = new mongoose.Schema({
   pageTitle: {type:String, required: true},
-  createdAt: {type:Date, immutable:false, default: new Date()},
+  createdAt: {type:Date, immutable:true, default: new Date()},
   lastUpdated: {type:Date, default: new Date()},
   pageBody: {type: String}
 })
