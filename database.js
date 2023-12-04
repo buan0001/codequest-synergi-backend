@@ -6,13 +6,6 @@ mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/
 // mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
 
 const pageSchema = new mongoose.Schema({
-  pageTitle: { type: String, required: true, unique: true },
-  pageBody: { type: [{ title: String, body: { type: String, required: true }, image: [String], placement: { type: Number, required: true, unique: true } }], required: true },
-  createdAt: { type: Date, default: new Date(), immutable: false },
-  updatedLast: { type: Date, default: new Date() }
-});
-
-const testSchema = new mongoose.Schema({
   pageTitle: {type:String, required: true},
   createdAt: {type:Date, immutable:true, default: new Date()},
   lastUpdated: {type:Date, default: new Date()},
@@ -20,7 +13,7 @@ const testSchema = new mongoose.Schema({
 })
 
 const PageModel = mongoose.model("page", pageSchema);
-const TestModel = mongoose.model("test", testSchema)
+// const TestModel = mongoose.model("test", testSchema)
 
 const publishedSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
@@ -44,4 +37,4 @@ const publishedSchema = new mongoose.Schema({
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 
-export { PageModel, BookModel, ArticleModel, TestModel };
+export { PageModel, BookModel, ArticleModel };
