@@ -12,9 +12,6 @@ const pageSchema = new mongoose.Schema({
   pageBody: {type: String}
 })
 
-const PageModel = mongoose.model("page", pageSchema);
-// const TestModel = mongoose.model("test", testSchema)
-
 const publishedSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
   release: { type: Date, required: true },
@@ -34,6 +31,19 @@ const publishedSchema = new mongoose.Schema({
   resume: { type: String }
 });
 
+const bookingSchema = new mongoose.Schema({
+  appointmentStart: Date, //ISO STRING: YYYY-MM-DDTHH:mm:ss.sssZ. Example: new Date(2023-12-04-T10:30)
+  // appointmentEnd ???
+  contactInfo:{
+    firstName: String,
+    lastName: String,
+    phoneNumber: Number,
+    email: String
+  },
+  appointmentInfo: String
+})
+
+const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 
