@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 
 // connect to mongoDB
 // test
-mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
+mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/codequest-synergi");
+// mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
 
 const pageSchema = new mongoose.Schema({
   pageTitle: { type: String, required: true, unique: true },
