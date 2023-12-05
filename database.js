@@ -6,10 +6,10 @@ mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/
 // mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
 
 const pageSchema = new mongoose.Schema({
-  pageTitle: {type:String, required: true},
+  title: {type:String, required: true},
   createdAt: {type:Date, immutable:true, default: new Date()},
   lastUpdated: {type:Date, default: new Date()},
-  pageBody: {type: String}
+  body: {type: String}
 })
 
 const publishedSchema = new mongoose.Schema({
