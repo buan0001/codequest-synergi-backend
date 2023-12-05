@@ -9,7 +9,7 @@ const pageSchema = new mongoose.Schema({
   title: {type:String, required: true},
   createdAt: {type:Date, immutable:true, default: new Date()},
   lastUpdated: {type:Date, default: new Date()},
-  body: {type: String}
+  body: {type: String},
 })
 
 const publishedSchema = new mongoose.Schema({
