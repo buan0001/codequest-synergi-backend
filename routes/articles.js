@@ -5,6 +5,7 @@ const articleRouter = Router();
 
 // get alle artikler
 articleRouter.get("/", async (req, res) => {
+  console.log("getting articles");
   const data = await ArticleModel.find({});
   res.json(data);
 });
@@ -16,9 +17,8 @@ articleRouter.get("/:articleTitle", async (req, res) => {
   console.log("type of title",typeof articleTitle);
 
   try {
-    const result = await ArticleModel.findOne({ title: articleTitle.toString() });
+    const result = await ArticleModel.findOne({ title: articleTitle });
     console.log("result",result);
-
     if (!result) {
       return res.status(404).json({ message: `Data not found for Articletitle: ${articleTitle}` });
     }
@@ -30,23 +30,24 @@ articleRouter.get("/:articleTitle", async (req, res) => {
 });
 
 articleRouter.post("/", async (req, res) => {
+  console.log("posting article");
   const data = req.body;
 
   try {
     const newArticle = new ArticleModel({
       title: data.title,
-      release: data.release,
       releaseYear: data.releaseYear,
-      publisher: data.publisher,
-      authors: data.authors,
+      publisher:data.publisher,
+      authors: data.authors.map(obj => {return {firstName: obj.firstName, lastName: obj.lastName}}),
       link: data.link,
-      pay: data.pay,
+      pay: data.isPay,
       resume: data.resume
     });
 
-    // console.log(newArticle);
+    console.log("article to make",newArticle);
 
     const savedArticle = await newArticle.save();
+    console.log("saved article?",savedArticle);
 
     if (!savedArticle) {
       return res.status(404).json({ message: "something went wrong - article not saved" });
@@ -54,6 +55,7 @@ articleRouter.post("/", async (req, res) => {
 
     res.status(201).json(savedArticle);
   } catch (error) {
+    console.log("ERROR?!",error);
     res.status(500).json({ message: error.message });
   }
 });

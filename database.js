@@ -14,14 +14,14 @@ const pageSchema = new mongoose.Schema({
 
 const publishedSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
-  release: { type: Date, required: true },
+  // release: { type: Date, required: true },
   releaseYear: { type: Number, required: true },
   publisher: { type: String, required: true },
   authors: {
     type: [
       {
-        firstname: { type: String, required: true },
-        lastname: { type: String, required: true }
+        firstName: { type: String, required: true },
+        lastName: { type: String, required: true }
       }
     ],
     required: true
