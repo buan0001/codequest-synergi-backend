@@ -41,6 +41,22 @@ const publishedSchema = new mongoose.Schema({
   resume: { type: String }
 });
 
+const bookingSchema = new mongoose.Schema({
+  appointmentStart: Date, //ISO STRING: YYYY-MM-DDTHH:mm:ss.sssZ. Example: new Date(2023-12-04-T10:30)
+  // appointmentEnd ???
+  contactInfo: {
+    firstName: String,
+    lastName: String,
+    phoneNumber: Number,
+    email: String
+  },
+  appointmentInfo: {
+    chooseService: String,
+    firstAndLastDay: String,
+    datesInRange: [Date]
+  }
+});
+
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 
