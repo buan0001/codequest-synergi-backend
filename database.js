@@ -6,11 +6,11 @@ mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/
 // mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
 
 const pageSchema = new mongoose.Schema({
-  title: {type:String, required: true},
-  createdAt: {type:Date, immutable:true, default: new Date()},
-  lastUpdated: {type:Date, default: new Date()},
-  body: {type: String},
-})
+  title: { type: String, required: true },
+  createdAt: { type: Date, immutable: true, default: new Date() },
+  lastUpdated: { type: Date, default: new Date() },
+  body: { type: String }
+});
 
 const publishedSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
@@ -40,24 +40,8 @@ const bookingSchema = new mongoose.Schema({
     phoneNumber: Number,
     email: String
   },
-  appointmentInfo: {
-    chooseService: String,
-    firstAndLastDay: String,
-    datesInRange: [Date]
-  }
-});
-
-const bookingSchema = new mongoose.Schema({
-  appointmentStart: Date, //ISO STRING: YYYY-MM-DDTHH:mm:ss.sssZ. Example: new Date(2023-12-04-T10:30)
-  // appointmentEnd ???
-  contactInfo:{
-    firstName: String,
-    lastName: String,
-    phoneNumber: Number,
-    email: String
-  },
   appointmentInfo: String
-})
+});
 
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
