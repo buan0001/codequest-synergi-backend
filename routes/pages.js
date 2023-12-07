@@ -1,5 +1,6 @@
+
 import { Router } from "express";
-import {PageModel} from "../database.js";
+import { PageModel } from "../database.js";
 
 const pageRouter = Router();
 
@@ -9,33 +10,45 @@ pageRouter.get("/", async (req, res) => {
   res.json(data);
 });
 
-// get én side ud fra pageTitle
-pageRouter.get("/:pageTitle", async (req, res) => {
-     
-  const pageTitle = req.params.pageTitle;
+
+// get alle titler
+pageRouter.get("/titles", async (req, res) =>{
+  const data = await PageModel.find({}).select('title -_id')
+  console.log("data",data);
+  res.json(data)
+})
+
+
+
+// get én side ud fra title
+pageRouter.get("/:title", async (req, res) => {
+  const title = req.params.title;
+  console.log("find this title:",title);
 
   try {
-    const result = await PageModel.findOne({ pageTitle });
+    const result = await PageModel.findOne({ title: title });
 
     if (!result) {
-      return res.status(404).json({ message: `Data not found for pageTitle: ${pageTitle}` });
+      return res.status(404).json({ message: `Data not found for title: ${title}` });
     }
-
+    console.log("body:", result.body);
+    console.log("body length:", result.body.length);
     res.json(result);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 });
 
-// pageRouter.patch("/:pageTitle", async (req, res) => {
 pageRouter.patch("/", async (req, res) => {
-  //   const pageTitle = req.params.pageTitle;
-  // const pageTitle = req.params.pageTitle;
+  console.log("patching a page:",req.body);
   const updateData = req.body;
-  console.log(updateData);
 
   try {
-    const updatedPage = await PageModel.findOneAndUpdate({ pageTitle: updateData.pageTitle }, updateData.pageBody, { new: true });
+    const updatedPage = await PageModel.findOneAndUpdate(
+      { title: updateData.title },
+      { body: updateData.body, lastUpdated: new Date() },
+      { new: true }
+    );
 
     if (!updatedPage) {
       return res.status(404).json({ message: "Document not found - and not Updated" });
@@ -46,17 +59,16 @@ pageRouter.patch("/", async (req, res) => {
   }
 });
 
-// KUN TIL TEST!!!
+// KUN TIL DEV BRUG
 pageRouter.post("/", async (req, res) => {
   // console.log("POSTING NEW PAGE");
   console.log("BODY", req.body);
   const data = req.body;
   const newPage = new PageModel({
-    pageTitle: data.pageTitle,
-    pageBody: data.pageBody,
+    title: data.title,
+    body: data.body,
   });
   try {
-    // console.log("NEW PAGE", newPage);
     newPage.save().then(savedPage => {
       console.log("page saved", savedPage);
       res.json(savedPage);
@@ -67,3 +79,14 @@ pageRouter.post("/", async (req, res) => {
 });
 
 export default pageRouter;
+
+
+
+// route til at ændre skema, hvis det skulle blive nødvendigt
+
+// pageRouter.get("/body", async (req, res) => {
+//   console.log("getting titles");
+//   const page = await PageModel.updateMany({}, {$rename:{body: "body"}});
+//   console.log("success?",page);
+//   res.json(page);
+// });
