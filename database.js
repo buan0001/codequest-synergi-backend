@@ -32,19 +32,23 @@ const publishedSchema = new mongoose.Schema({
 });
 
 const bookingSchema = new mongoose.Schema({
-  appointmentStart: Date, //ISO STRING: YYYY-MM-DDTHH:mm:ss.sssZ. Example: new Date(2023-12-04-T10:30)
-  // appointmentEnd ???
   contactInfo: {
-    firstName: String,
-    lastName: String,
-    phoneNumber: Number,
-    email: String
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    phoneNumber: { type: Number, required: true },
+    email: { type: String, required: true }
   },
-  appointmentInfo: String
+  appointmentInfo: {
+    service: { type: String, required: true },
+    firstDay: { type: String, required: true },
+    lastDay: { type: String, required: true },
+    message: { type: String }
+  }
 });
 
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
+const BookingModel = mongoose.model("booking", bookingSchema);
 
-export { PageModel, BookModel, ArticleModel };
+export { PageModel, BookModel, ArticleModel, BookingModel };

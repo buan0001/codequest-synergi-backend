@@ -1,26 +1,26 @@
 import { Router } from "express";
-import { ArticleModel } from "../database.js";
+import { BookingModel } from "../database.js";
 
-const articleRouter = Router();
+const bookingRouter = Router();
 
-// get alle artikler
-articleRouter.get("/", async (req, res) => {
-  const data = await ArticleModel.find({});
+// get alle bookings
+bookingRouter.get("/", async (req, res) => {
+  const data = await BookingModel.find({});
   res.json(data);
 });
 
-// get en artikel
-articleRouter.get("/:articleTitle", async (req, res) => {
-  console.log("getting ONE article with title:",req.params.articleTitle);
-  const articleTitle = req.params.articleTitle;
-  console.log("type of title",typeof articleTitle);
+// get en booking
+bookingRouter.get("/:phoneNumber", async (req, res) => {
+  console.log("getting ONE booking med phoneNumber:", req.params.phoneNumber);
+  const phoneNumber = req.params.phoneNumber;
+  console.log("type of phoneNumber", typeof phoneNumber);
 
   try {
-    const result = await ArticleModel.findOne({ title: articleTitle.toString() });
-    console.log("result",result);
+    const result = await BookingModel.findOne({ "contactInfo.phoneNumber": phoneNumber });
+    console.log("result", result);
 
     if (!result) {
-      return res.status(404).json({ message: `Data not found for Articletitle: ${articleTitle}` });
+      return res.status(404).json({ message: `Data not found for phoneNumber: ${phoneNumber}` });
     }
 
     res.json(result);
@@ -29,66 +29,70 @@ articleRouter.get("/:articleTitle", async (req, res) => {
   }
 });
 
-articleRouter.post("/", async (req, res) => {
+bookingRouter.post("/", async (req, res) => {
   const data = req.body;
 
   try {
-    const newArticle = new ArticleModel({
-      title: data.title,
-      release: data.release,
-      releaseYear: data.releaseYear,
-      publisher: data.publisher,
-      authors: data.authors,
-      link: data.link,
-      pay: data.pay,
-      resume: data.resume
+    const newBooking = new BookingModel({
+      contactInfo: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        email: data.email
+      },
+      appointmentInfo: {
+        service: data.chooseService,
+        firstDay: data.firstDay,
+        lastDay: data.lastDay,
+        message: data.message
+      }
     });
 
     // console.log(newArticle);
 
-    const savedArticle = await newArticle.save();
+    const savedBooking = await newBooking.save();
 
-    if (!savedArticle) {
-      return res.status(404).json({ message: "something went wrong - article not saved" });
+    if (!savedBooking) {
+      return res.status(404).json({ message: "something went wrong - booking not saved" });
     }
 
-    res.status(201).json(savedArticle);
+    res.status(201).json(savedBooking);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// articleRouter.patch("/:articleTitle", async (req, res) => {
-articleRouter.patch("/", async (req, res) => {
-  // const articleTitle = req.params.articleTitle;
-  const updateData = req.body;
-  console.log("patching article with this body:", updateData);
+// // articleRouter.patch("/:articleTitle", async (req, res) => {
+// articleRouter.patch("/", async (req, res) => {
+//   // const articleTitle = req.params.articleTitle;
+//   const updateData = req.body;
+//   console.log("patching article with this body:", updateData);
 
-  try {
-    const updatedArticle = await ArticleModel.findOneAndUpdate({ title: updateData.title }, updateData.resume, { new: true });
+//   try {
+//     const updatedArticle = await ArticleModel.findOneAndUpdate({ title: updateData.title }, updateData.resume, { new: true });
 
-    if (!updatedArticle) {
-      return res.status(404).json({ message: "Document not found - and not Updated" });
-    }
-    res.json(updatedArticle);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+//     if (!updatedArticle) {
+//       return res.status(404).json({ message: "Document not found - and not Updated" });
+//     }
+//     res.json(updatedArticle);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
 
-articleRouter.delete("/:articleTitle", async (req, res) => {
-  const articleTitle = req.params.articleTitle;
+// articleRouter.delete("/:articleTitle", async (req, res) => {
+//   const articleTitle = req.params.articleTitle;
 
-  try {
-    const deleteArticle = await ArticleModel.findOneAndDelete({ title: articleTitle });
+//   try {
+//     const deleteArticle = await ArticleModel.findOneAndDelete({ title: articleTitle });
 
-    if (!articleTitle) {
-      return res.status(404).json({ message: "Document not found - and not Deleted" });
-    }
-    res.json(deleteArticle);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+//     if (!articleTitle) {
+//       return res.status(404).json({ message: "Document not found - and not Deleted" });
+//     }
+//     res.json(deleteArticle);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
 
-export default articleRouter;
+export default bookingRouter;
