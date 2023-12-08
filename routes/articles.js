@@ -11,16 +11,16 @@ articleRouter.get("/", async (req, res) => {
 });
 
 // get en artikel
-articleRouter.get("/:articleTitle", async (req, res) => {
-  console.log("getting ONE article with title:",req.params.articleTitle);
-  const articleTitle = req.params.articleTitle;
-  console.log("type of title",typeof articleTitle);
+articleRouter.get("/:articleId", async (req, res) => {
+  const ID = req.params.articleId;
+  console.log("getting ONE article with id:",ID);
+  
 
   try {
-    const result = await ArticleModel.findOne({ title: articleTitle });
+    const result = await ArticleModel.findOne({ _id: ID });
     console.log("result",result);
     if (!result) {
-      return res.status(404).json({ message: `Data not found for Articletitle: ${articleTitle}` });
+      return res.status(404).json({ message: `Data not found for articleId: ${ID}` });
     }
 
     res.json(result);
@@ -78,13 +78,14 @@ articleRouter.patch("/", async (req, res) => {
   }
 });
 
-articleRouter.delete("/:articleTitle", async (req, res) => {
-  const articleTitle = req.params.articleTitle;
+articleRouter.delete("/:articleId", async (req, res) => {
+  const ID = req.params.articleId;
+  console.log("deleting article with id",ID);
 
   try {
-    const deleteArticle = await ArticleModel.findOneAndDelete({ title: articleTitle });
+    const deleteArticle = await ArticleModel.findOneAndDelete({ _id: ID });
 
-    if (!articleTitle) {
+    if (!ID) {
       return res.status(404).json({ message: "Document not found - and not Deleted" });
     }
     res.json(deleteArticle);

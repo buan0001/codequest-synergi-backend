@@ -10,16 +10,17 @@ bookRouter.get("/", async (req, res) => {
 });
 
 // get en bog
-bookRouter.get("/:bookTitle", async (req, res) => {
-  const bookTitle = req.params.bookTitle;
+bookRouter.get("/:bookId", async (req, res) => {
+  const ID = req.params.bookId;
+  console.log("ID from getting one book",ID);
 
   try {
-    const result = await BookModel.findOne({ title: bookTitle });
+    const result = await BookModel.findOne({ _id: ID });
 
     if (!result) {
-      return res.status(404).json({ message: `Data not found for Booktitle: ${bookTitle}` });
+      return res.status(404).json({ message: `Data not found for Booktitle: ${ID}` });
     }
-
+    console.log("result from getting one book:",result);
     res.json(result);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -37,7 +38,7 @@ bookRouter.post("/", async (req, res) => {
       publisher: data.publisher,
       authors: data.authors,
       link: data.link,
-      pay: data.pay,
+      pay: data.isPay,
       resume: data.resume
     });
 
@@ -71,7 +72,7 @@ bookRouter.patch("/", async (req, res) => {
   }
 });
 
-bookRouter.delete("/:bookTitle", async (req, res) => {
+bookRouter.delete("/:bookId", async (req, res) => {
   const bookTitle = req.params.bookTitle;
 
   try {
