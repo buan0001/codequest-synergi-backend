@@ -98,7 +98,4 @@ bookingRouter.delete("/:bookingId", async (req, res) => {
   }
 });
 
-
-
-
 export default bookingRouter;
