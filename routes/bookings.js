@@ -54,31 +54,33 @@ bookingRouter.post("/", async (req, res) => {
     if (existingBooking) {
       console.error("Date already exists in the database");
       return res.status(400).json({ message: "Date already exists in the database" });
-    } else if (!existingBooking) {
-      const newBooking = new OneDayBookingModel({
-        contactInfo: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          phoneNumber: data.phoneNumber,
-          email: data.email,
-        },
-        appointmentInfo: {
-          service: data.service,
-          date: data.date,
-          message: data.message,
-        },
-      });
-
-      const savedBooking = await newBooking.save();
-      // Handle saved booking
-      res.status(201).json(savedBooking);
     }
+
+    // If no existing booking, create a new booking
+    const newBooking = new OneDayBookingModel({
+      contactInfo: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+      },
+      appointmentInfo: {
+        service: data.service,
+        date: data.date,
+        message: data.message,
+      },
+    });
+
+    const savedBooking = await newBooking.save();
+    // Handle saved booking
+    res.status(201).json(savedBooking);
   } catch (error) {
     // Log the full error stack trace for debugging purposes
     console.error("Error:", error.stack);
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 
 bookingRouter.delete("/:bookingId", async (req, res) => {
@@ -96,37 +98,7 @@ bookingRouter.delete("/:bookingId", async (req, res) => {
   }
 });
 
-// // articleRouter.patch("/:articleTitle", async (req, res) => {
-// articleRouter.patch("/", async (req, res) => {
-//   // const articleTitle = req.params.articleTitle;
-//   const updateData = req.body;
-//   console.log("patching article with this body:", updateData);
 
-//   try {
-//     const updatedArticle = await ArticleModel.findOneAndUpdate({ title: updateData.title }, updateData.resume, { new: true });
 
-//     if (!updatedArticle) {
-//       return res.status(404).json({ message: "Document not found - and not Updated" });
-//     }
-//     res.json(updatedArticle);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
-// articleRouter.delete("/:articleTitle", async (req, res) => {
-//   const articleTitle = req.params.articleTitle;
-
-//   try {
-//     const deleteArticle = await ArticleModel.findOneAndDelete({ title: articleTitle });
-
-//     if (!articleTitle) {
-//       return res.status(404).json({ message: "Document not found - and not Deleted" });
-//     }
-//     res.json(deleteArticle);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
 
 export default bookingRouter;
