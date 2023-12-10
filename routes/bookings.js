@@ -1,25 +1,25 @@
 import { Router } from "express";
-import { BookingModel } from "../database.js";
+import { OneDayBookingModel } from "../database.js";
 
 const bookingRouter = Router();
 
 // get alle bookings
 bookingRouter.get("/", async (req, res) => {
-  const data = await BookingModel.find({});
+  const data = await OneDayBookingModel.find({});
   res.json(data);
 });
 
-// get en booking
+// get alle bookinger med samme telefonnummer
 bookingRouter.get("/:phoneNumber", async (req, res) => {
-  console.log("getting ONE booking med phoneNumber:", req.params.phoneNumber);
+  console.log("getting bookings with phoneNumber:", req.params.phoneNumber);
   const phoneNumber = req.params.phoneNumber;
   console.log("type of phoneNumber", typeof phoneNumber);
 
   try {
-    const result = await BookingModel.findOne({ "contactInfo.phoneNumber": phoneNumber });
+    const result = await OneDayBookingModel.find({ "contactInfo.phoneNumber": phoneNumber });
     console.log("result", result);
 
-    if (!result) {
+    if (!result || result.length === 0) {
       return res.status(404).json({ message: `Data not found for phoneNumber: ${phoneNumber}` });
     }
 
@@ -29,36 +29,70 @@ bookingRouter.get("/:phoneNumber", async (req, res) => {
   }
 });
 
+// const existingBooking = await OneDayBookingModel.findOne({ "appointmentInfo.date": data.date });
+
 bookingRouter.post("/", async (req, res) => {
   const data = req.body;
 
   try {
-    const newBooking = new BookingModel({
-      contactInfo: {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phoneNumber: data.phoneNumber,
-        email: data.email
+    // Extract only the date part (YYYY-MM-DD) from the ISO date string
+    const isoDate = new Date(data.date);
+    const dateOnly = new Date(isoDate.toISOString().split("T")[0]);
+
+    // Calculate the start and end of the day for the provided date
+    const startOfDay = new Date(dateOnly.setUTCHours(0, 0, 0, 0));
+    const endOfDay = new Date(dateOnly.setUTCHours(23, 59, 59, 999));
+
+    // Check if a booking exists for the date (ignoring the time)
+    const existingBooking = await OneDayBookingModel.findOne({
+      "appointmentInfo.date": {
+        $gte: startOfDay, // $gte operator (greater than or equal)
+        $lte: endOfDay, // $lte operator (less than or equal)
       },
-      appointmentInfo: {
-        service: data.chooseService,
-        firstDay: data.firstDay,
-        lastDay: data.lastDay,
-        message: data.message
-      }
     });
 
-    // console.log(newArticle);
+    if (existingBooking) {
+      console.error("Date already exists in the database");
+      return res.status(400).json({ message: "Date already exists in the database" });
+    } else if (!existingBooking) {
+      const newBooking = new OneDayBookingModel({
+        contactInfo: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+        },
+        appointmentInfo: {
+          service: data.service,
+          date: data.date,
+          message: data.message,
+        },
+      });
 
-    const savedBooking = await newBooking.save();
-
-    if (!savedBooking) {
-      return res.status(404).json({ message: "something went wrong - booking not saved" });
+      const savedBooking = await newBooking.save();
+      // Handle saved booking
+      res.status(201).json(savedBooking);
     }
-
-    res.status(201).json(savedBooking);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Log the full error stack trace for debugging purposes
+    console.error("Error:", error.stack);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+
+bookingRouter.delete("/:bookingId", async (req, res) => {
+  const bookingId = req.params.bookingId;
+
+  try {
+    const deleteBooking = await OneDayBookingModel.findOneAndDelete({ _id: bookingId });
+
+    if (!bookingId) {
+      return res.status(404).json({ message: "Document not found - and not Deleted" });
+    }
+    res.json(deleteBooking);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

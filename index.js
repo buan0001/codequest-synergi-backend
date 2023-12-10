@@ -7,6 +7,8 @@ import articleRouter from "./routes/articles.js";
 import mongoose from "mongoose";
 import bookingRouter from "./routes/bookings.js";
 
+
+
 // import connection from "database.js";
 
 const app = express();
