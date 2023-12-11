@@ -60,10 +60,35 @@ const oneDayBookingSchema = new mongoose.Schema({
   },
 });
 
+const blogSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  image: {type: String},
+  body: String,
+  resume: String,
+  commentsAllowed: { type: Boolean, required: true },
+  createdAt: { type: Date, default: new Date() },
+  lastUpdated: { type: Date, default: new Date() },
+  comments: [{type: mongoose.Types.ObjectId, ref: 'CommentModel'}] , // reference to the specific comment
+});
+
+const commentSchema = new mongoose.Schema({
+  body: String,
+  userID: mongoose.Types.ObjectId,
+  postID: {type: mongoose.Types.ObjectId, index: true},
+});
+
+const userSchema = new mongoose.Schema({
+  userName: String,
+});
+
+const BlogModel = mongoose.model("blog", blogSchema);
+const CommentModel = mongoose.model("comment", commentSchema);
+const UserModel = mongoose.model("user", userSchema);
+
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 // const BookingModel = mongoose.model("booking", bookingSchema);
 const OneDayBookingModel = mongoose.model("booking", oneDayBookingSchema);
 
-export { PageModel, BookModel, ArticleModel, OneDayBookingModel };
+export { PageModel, BookModel, ArticleModel, OneDayBookingModel, BlogModel, CommentModel, UserModel };
