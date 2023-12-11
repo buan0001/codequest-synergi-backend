@@ -6,11 +6,11 @@ mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/
 // mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
 
 const pageSchema = new mongoose.Schema({
-  title: {type:String, required: true},
-  createdAt: {type:Date, immutable:true, default: new Date()},
-  lastUpdated: {type:Date, default: new Date()},
-  body: {type: String},
-})
+  title: { type: String, required: true },
+  createdAt: { type: Date, immutable: true, default: new Date() },
+  lastUpdated: { type: Date, default: new Date() },
+  body: { type: String },
+});
 
 const publishedSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
@@ -21,30 +21,49 @@ const publishedSchema = new mongoose.Schema({
     type: [
       {
         firstName: { type: String, required: true },
-        lastName: { type: String, required: true }
-      }
+        lastName: { type: String, required: true },
+      },
     ],
-    required: true
+    required: true,
   },
   link: { type: String },
   pay: { type: Boolean, default: false },
-  resume: { type: String }
+  resume: { type: String },
 });
 
-const bookingSchema = new mongoose.Schema({
-  appointmentStart: Date, //ISO STRING: YYYY-MM-DDTHH:mm:ss.sssZ. Example: new Date(2023-12-04-T10:30)
-  // appointmentEnd ???
-  contactInfo:{
-    firstName: String,
-    lastName: String,
-    phoneNumber: Number,
-    email: String
+// const bookingSchema = new mongoose.Schema({
+//   contactInfo: {
+//     firstName: { type: String, required: true },
+//     lastName: { type: String, required: true },
+//     phoneNumber: { type: Number, required: true },
+//     email: { type: String, required: true },
+//   },
+//   appointmentInfo: {
+//     service: { type: String, required: true },
+//     firstDay: { type: String, required: true },
+//     lastDay: { type: String, required: true },
+//     message: { type: String },
+//   },
+// });
+
+const oneDayBookingSchema = new mongoose.Schema({
+  contactInfo: {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    phoneNumber: { type: Number, required: true },
+    email: { type: String, required: true },
   },
-  appointmentInfo: String
-})
+  appointmentInfo: {
+    service: { type: String, required: true },
+    date: { type: Date, required: true, unique: true },
+    message: { type: String },
+  },
+});
 
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
+// const BookingModel = mongoose.model("booking", bookingSchema);
+const OneDayBookingModel = mongoose.model("booking", oneDayBookingSchema);
 
-export { PageModel, BookModel, ArticleModel };
+export { PageModel, BookModel, ArticleModel, OneDayBookingModel };

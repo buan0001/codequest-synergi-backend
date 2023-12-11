@@ -1,26 +1,26 @@
 import { Router } from "express";
-import { ArticleModel } from "../database.js";
+import { OneDayBookingModel } from "../database.js";
 
-const articleRouter = Router();
+const bookingRouter = Router();
 
-// get alle artikler
-articleRouter.get("/", async (req, res) => {
-  const data = await ArticleModel.find({});
+// get alle bookings
+bookingRouter.get("/", async (req, res) => {
+  const data = await OneDayBookingModel.find({});
   res.json(data);
 });
 
-// get en artikel
-articleRouter.get("/:articleTitle", async (req, res) => {
-  console.log("getting ONE article with title:",req.params.articleTitle);
-  const articleTitle = req.params.articleTitle;
-  console.log("type of title",typeof articleTitle);
+// get alle bookinger med samme telefonnummer
+bookingRouter.get("/:phoneNumber", async (req, res) => {
+  console.log("getting bookings with phoneNumber:", req.params.phoneNumber);
+  const phoneNumber = req.params.phoneNumber;
+  console.log("type of phoneNumber", typeof phoneNumber);
 
   try {
-    const result = await ArticleModel.findOne({ title: articleTitle.toString() });
-    console.log("result",result);
+    const result = await OneDayBookingModel.find({ "contactInfo.phoneNumber": phoneNumber });
+    console.log("result", result);
 
-    if (!result) {
-      return res.status(404).json({ message: `Data not found for Articletitle: ${articleTitle}` });
+    if (!result || result.length === 0) {
+      return res.status(404).json({ message: `Data not found for phoneNumber: ${phoneNumber}` });
     }
 
     res.json(result);
@@ -29,66 +29,73 @@ articleRouter.get("/:articleTitle", async (req, res) => {
   }
 });
 
-articleRouter.post("/", async (req, res) => {
+// const existingBooking = await OneDayBookingModel.findOne({ "appointmentInfo.date": data.date });
+
+bookingRouter.post("/", async (req, res) => {
   const data = req.body;
 
   try {
-    const newArticle = new ArticleModel({
-      title: data.title,
-      release: data.release,
-      releaseYear: data.releaseYear,
-      publisher: data.publisher,
-      authors: data.authors,
-      link: data.link,
-      pay: data.pay,
-      resume: data.resume
+    // Extract only the date part (YYYY-MM-DD) from the ISO date string
+    const isoDate = new Date(data.date);
+    const dateOnly = new Date(isoDate.toISOString().split("T")[0]);
+
+    // Calculate the start and end of the day for the provided date
+    const startOfDay = new Date(dateOnly.setUTCHours(0, 0, 0, 0));
+    const endOfDay = new Date(dateOnly.setUTCHours(23, 59, 59, 999));
+
+    // Check if a booking exists for the date (ignoring the time)
+    const existingBooking = await OneDayBookingModel.findOne({
+      "appointmentInfo.date": {
+        $gte: startOfDay, // $gte operator (greater than or equal)
+        $lte: endOfDay, // $lte operator (less than or equal)
+      },
     });
 
-    // console.log(newArticle);
-
-    const savedArticle = await newArticle.save();
-
-    if (!savedArticle) {
-      return res.status(404).json({ message: "something went wrong - article not saved" });
+    if (existingBooking) {
+      console.error("Date already exists in the database");
+      return res.status(400).json({ message: "Date already exists in the database" });
     }
 
-    res.status(201).json(savedArticle);
+    // If no existing booking, create a new booking
+    const newBooking = new OneDayBookingModel({
+      contactInfo: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        email: data.email,
+      },
+      appointmentInfo: {
+        service: data.service,
+        date: data.date,
+        message: data.message,
+      },
+    });
+
+    const savedBooking = await newBooking.save();
+    // Handle saved booking
+    res.status(201).json(savedBooking);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    // Log the full error stack trace for debugging purposes
+    console.error("Error:", error.stack);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
-// articleRouter.patch("/:articleTitle", async (req, res) => {
-articleRouter.patch("/", async (req, res) => {
-  // const articleTitle = req.params.articleTitle;
-  const updateData = req.body;
-  console.log("patching article with this body:", updateData);
+
+
+bookingRouter.delete("/:bookingId", async (req, res) => {
+  const bookingId = req.params.bookingId;
 
   try {
-    const updatedArticle = await ArticleModel.findOneAndUpdate({ title: updateData.title }, updateData.resume, { new: true });
+    const deleteBooking = await OneDayBookingModel.findOneAndDelete({ _id: bookingId });
 
-    if (!updatedArticle) {
-      return res.status(404).json({ message: "Document not found - and not Updated" });
-    }
-    res.json(updatedArticle);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-articleRouter.delete("/:articleTitle", async (req, res) => {
-  const articleTitle = req.params.articleTitle;
-
-  try {
-    const deleteArticle = await ArticleModel.findOneAndDelete({ title: articleTitle });
-
-    if (!articleTitle) {
+    if (!bookingId) {
       return res.status(404).json({ message: "Document not found - and not Deleted" });
     }
-    res.json(deleteArticle);
+    res.json(deleteBooking);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-export default articleRouter;
+export default bookingRouter;
