@@ -8,6 +8,7 @@ import articleRouter from "./routes/articles.js";
 import bookingRouter from "./routes/bookings.js";
 import blogRouter from "./routes/blog.js";
 import userRouter from "./routes/users.js";
+import commentRouter from "./routes/comments.js";
 
 // import connection from "database.js";
 
@@ -23,7 +24,8 @@ app.use("/books", bookRouter);
 app.use("/articles", articleRouter);
 app.use("/booking", bookingRouter);
 app.use("/blog", blogRouter);
-app.use("users", userRouter)
+app.use("/users", userRouter)
+app.use("/comments", commentRouter)
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}, http://localhost:${port}`);
