@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { BlogModel } from "../database.js";
+import { BlogModel, CommentModel } from "../database.js";
 
 const blogRouter = Router();
 
 // get alle posts
 blogRouter.get("/", async (req, res) => {
   const data = await BlogModel.find({});
-  console.log("getting all blog posts:",data);
+  console.log("getting all blog posts:");
   res.json(data);
 });
 
@@ -17,7 +17,7 @@ blogRouter.get("/:blogId", async (req, res) => {
 
   try {
     const result = await BlogModel.findOne({ _id: ID }).populate('CommentModel').exec()
-    console.log("result", result);
+    // console.log("result", result);
 
     if (!result || result.length === 0) {
       return res.status(404).json({ message: `Data not found for id: ${ID}` });
@@ -33,8 +33,6 @@ blogRouter.get("/:blogId", async (req, res) => {
 blogRouter.post("/", async (req, res) => {
   const data = req.body;
   console.log("creating post with this payload:", data);
-  console.log(Object.entries);
-
   try {
     const response = await new BlogModel( data ).save();
     console.log("response", response);
@@ -50,12 +48,14 @@ blogRouter.delete("/:blogId", async (req, res) => {
   const blogId = req.params.blogId;
 
   try {
-    const deleteBooking = await BlogModel.findOneAndDelete({ _id: blogId });
+    const deleteBlogPost = await BlogModel.findOneAndDelete({ _id: blogId });
+    const deleteRelatedComments = await CommentModel.deleteMany({postID: blogId})
+    console.log("deleted comments?",deleteRelatedComments);
 
-    if (!bookingId) {
+    if (!blogId) {
       return res.status(404).json({ message: "Document not found - and not Deleted" });
     }
-    res.json(deleteBooking);
+    res.json([deleteBlogPost, deleteRelatedComments]);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

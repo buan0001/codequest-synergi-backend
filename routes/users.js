@@ -1,35 +1,47 @@
 import { Router } from "express";
-import { UserModel } from "../database.js";
+import { UserModel, CommentModel, BlogModel } from "../database.js";
 
 const userRouter = Router();
 
-// get alle posts
+// get alle users
 userRouter.get("/", async (req, res) => {
-  const data = await UserModel.find({ });
-  console.log("getting all users:", data);
+  const data = await UserModel.find({});
+  console.log("getting all users");
   res.json(data);
 });
 
-// get én post
-userRouter.get("/:blogId", async (req, res) => {
-  console.log("getting blogpost with id:", req.params.blogId);
-  const ID = req.params.blogId;
+// get users alt efter admin status
+userRouter.get("/:adminStatus", async (req, res) => {
+  const adminBool = req.params.adminStatus;
+  const data = await UserModel.find({ admin: adminBool });
+  console.log("getting all users with adminbool:", adminBool);
+  res.json(data);
+});
+
+// get all comments from one user, paginated
+userRouter.get("/comments/:userId", async (req, res) => {
+  const ID = req.params.userId;
+  console.log("getting comments from user with id:", ID);
 
   try {
-    const result = await UserModel.findOne({ _id: ID }).populate("CommentModel").exec();
-    console.log("result", result);
+    console.log("before result");
+    // const result = await CommentModel
+    // const result = await CommentModel.find({ userID: ID }, "-__v -userID").populate('postID').exec();
+    const result = await CommentModel.find({ userID: ID }, ('-__v')).populate({ path: "postID", select:"title image",  model: BlogModel });
+    console.log("after result",result);
+
 
     if (!result || result.length === 0) {
-      return res.status(404).json({ message: `Data not found for id: ${ID}` });
+      return res.status(404).json({ message: `result not found for id: ${ID}` });
     }
 
     res.json(result);
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: err.message });
   }
 });
 
-// post én blog post
 userRouter.post("/", async (req, res) => {
   const data = req.body;
   console.log("creating user with this name:", data);
@@ -39,22 +51,21 @@ userRouter.post("/", async (req, res) => {
     console.log("response", response);
     res.status(201).json(response);
   } catch (error) {
-    // Log the full error stack trace for debugging purposes
     console.error("Error:", error.stack);
     res.status(500).json({ message: "Server Error" });
   }
 });
 
-userRouter.delete("/:blogId", async (req, res) => {
-  const blogId = req.params.blogId;
+userRouter.delete("/:userId", async (req, res) => {
+  const userId = req.params.userId;
 
   try {
-    const deleteBooking = await UserModel.findOneAndDelete({ _id: blogId });
+    const deleteUser = await UserModel.findOneAndDelete({ _id: userId });
 
-    if (!bookingId) {
-      return res.status(404).json({ message: "Document not found - and not Deleted" });
+    if (!userId) {
+      return res.status(404).json({ message: "Document not found - and not deleted" });
     }
-    res.json(deleteBooking);
+    res.json(deleteUser);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

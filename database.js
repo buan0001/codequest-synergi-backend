@@ -66,29 +66,35 @@ const blogSchema = new mongoose.Schema({
   body: String,
   resume: String,
   commentsAllowed: { type: Boolean, required: true },
-  createdAt: { type: Date, default: new Date() },
+  createdAt: { type: Date, default: new Date(), immutable: true },
   lastUpdated: { type: Date, default: new Date() },
-  comments: [{type: mongoose.Types.ObjectId, ref: 'CommentModel'}] , // reference to the specific comment
-});
-
-const commentSchema = new mongoose.Schema({
-  body: String,
-  userID: mongoose.Types.ObjectId,
-  postID: {type: mongoose.Types.ObjectId, index: true},
+  comments: [{type: mongoose.Types.ObjectId, ref: './database.js/CommentModel'}] , // reference to the specific comment
 });
 
 const userSchema = new mongoose.Schema({
-  userName: String,
+  userName: { type: String, unique: true, index: true },
+  createdAt: { type: Date, default: new Date(), immutable: true },
+  admin: Boolean,
 });
 
-const BlogModel = mongoose.model("blog", blogSchema);
-const CommentModel = mongoose.model("comment", commentSchema);
+
+const commentSchema = new mongoose.Schema({
+  body: String,
+  createdAt: { type: Date, default: new Date(), immutable:true},
+  userID: { type: mongoose.Types.ObjectId, ref: 'UserModel', index:true },
+  postID: { type: mongoose.Types.ObjectId, ref: 'BlogModel', index: true },
+});
+
+console.log("registering all models");
 const UserModel = mongoose.model("user", userSchema);
+const CommentModel = mongoose.model("comment", commentSchema);
+const BlogModel = mongoose.model("blog", blogSchema);
 
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 // const BookingModel = mongoose.model("booking", bookingSchema);
 const OneDayBookingModel = mongoose.model("booking", oneDayBookingSchema);
+console.log("all models registered");
 
-export { PageModel, BookModel, ArticleModel, OneDayBookingModel, BlogModel, CommentModel, UserModel };
+export { PageModel, BookModel, ArticleModel, OneDayBookingModel, BlogModel,UserModel, CommentModel,  };
