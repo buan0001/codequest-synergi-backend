@@ -24,18 +24,45 @@ userRouter.get("/comments/:userId", async (req, res) => {
   console.log("getting comments from user with id:", ID);
 
   try {
-    console.log("before result");
-    // const result = await CommentModel
-    // const result = await CommentModel.find({ userID: ID }, "-__v -userID").populate('postID').exec();
-    const result = await CommentModel.find({ userID: ID }, ('-__v')).populate({ path: "postID", select:"title image",  model: BlogModel });
-    console.log("after result",result);
-
-
+    // Finds all comments by a single user
+    const result = await CommentModel.find({ userID: ID }, "-__v").populate({ path: "postID", select: "title image", model: BlogModel }).sort("postID");
     if (!result || result.length === 0) {
       return res.status(404).json({ message: `result not found for id: ${ID}` });
     }
 
-    res.json(result);
+    // Things that will be used during the forEach
+    const final = [];
+    let tempPost;
+    function initPost(post, comment) {
+      tempPost = { _id: post._id, image: post.image, title: post.title, comments: [{ body: comment.body, createdAt: comment.createdAt }] };
+    }
+    // We want to reverse the structure: If the user has made multiple comments on the same post, we only want to include the post once and have the comments as a nested array
+    // On the first cycle a new post object is instantiated.
+    // Afterwards, this post object's comment array is populated with information from any comment under the same post
+    // Here it's important that the array is already sorted by posts, since we rely on there being no more comments related to the same post, once a comment with a different post id is reached
+    // Once this happens the temporary object is pushed into the final array and a new temp post object is instantiated.
+    result.forEach((comment) => {
+      if (!tempPost) {
+        initPost(comment.postID, comment);
+      } else if (tempPost._id === comment.postID._id) {
+        tempPost.comments.push({ body: comment.body, createdAt: comment.createdAt });
+      } else {
+        final.push(tempPost);
+        initPost(comment.postID, comment);
+      }
+    });
+    // Since the final temp object will never be pushed into the final array by a new comment, we'll just push it once the loop is finished
+    if (tempPost) {
+      final.push(tempPost);
+    }
+
+    // Hopefully this should transform the object structure from something like:
+    // {body, createdAt, post:{title, image, _id}}
+    // To something like:
+    // {title, image, comments:[{body, createdAt}]}
+
+
+    res.json(final);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: err.message });
