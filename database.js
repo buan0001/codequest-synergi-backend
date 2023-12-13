@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
+import "dotenv/config"
 
-mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/codequest-synergi").then(() =>console.log("Connected to mongoDB!")).catch((err) =>console.error("Error connecting to server",err))
-
+mongoose.connect(process.env.MONGO_CONNECTION).then(() =>console.log("Connected to mongoDB!")).catch((err) =>console.error("Error connecting to server",err))
 
 const pageSchema = new mongoose.Schema({
   title: { type: String, required: true },
