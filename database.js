@@ -32,20 +32,6 @@ const publishedSchema = new mongoose.Schema({
   resume: { type: String },
 });
 
-// const bookingSchema = new mongoose.Schema({
-//   contactInfo: {
-//     firstName: { type: String, required: true },
-//     lastName: { type: String, required: true },
-//     phoneNumber: { type: Number, required: true },
-//     email: { type: String, required: true },
-//   },
-//   appointmentInfo: {
-//     service: { type: String, required: true },
-//     firstDay: { type: String, required: true },
-//     lastDay: { type: String, required: true },
-//     message: { type: String },
-//   },
-// });
 
 const oneDayBookingSchema = new mongoose.Schema({
   contactInfo: {
@@ -94,7 +80,6 @@ const BlogModel = mongoose.model("blog", blogSchema);
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
-// const BookingModel = mongoose.model("booking", bookingSchema);
 const OneDayBookingModel = mongoose.model("booking", oneDayBookingSchema);
 console.log("all models registered");
 
