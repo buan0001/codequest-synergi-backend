@@ -79,14 +79,3 @@ pageRouter.post("/", async (req, res) => {
 });
 
 export default pageRouter;
-
-
-
-// route til at ændre skema, hvis det skulle blive nødvendigt
-
-// pageRouter.get("/body", async (req, res) => {
-//   console.log("getting titles");
-//   const page = await PageModel.updateMany({}, {$rename:{body: "body"}});
-//   console.log("success?",page);
-//   res.json(page);
-// });
