@@ -31,7 +31,7 @@ pageRouter.get("/:title", async (req, res) => {
     if (!result) {
       return res.status(404).json({ message: `Data not found for title: ${title}` });
     }
-    console.log("body:", result.body);
+    // console.log("body:", result.body);
     console.log("body length:", result.body.length);
     res.json(result);
   } catch (err) {
