@@ -61,13 +61,14 @@ articleRouter.post("/", async (req, res) => {
 });
 
 // articleRouter.patch("/:articleTitle", async (req, res) => {
-articleRouter.patch("/", async (req, res) => {
+articleRouter.patch("/:articleId", async (req, res) => {
   // const articleTitle = req.params.articleTitle;
   const updateData = req.body;
+  const ID = req.params.articleId;
   console.log("patching article with this body:", updateData);
 
   try {
-    const updatedArticle = await ArticleModel.findOneAndUpdate({ _id: updateData._id }, updateData, { returnOriginal: false });
+    const updatedArticle = await ArticleModel.findOneAndUpdate({ _id: ID }, updateData, { returnOriginal: false });
     console.log("updated article:",updatedArticle);
     if (!updatedArticle) {
       return res.status(404).json({ message: "Document not found - and not Updated" });

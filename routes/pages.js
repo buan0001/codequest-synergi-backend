@@ -4,14 +4,14 @@ import { PageModel } from "../database.js";
 
 const pageRouter = Router();
 
-// get alle sider
+// get all pages
 pageRouter.get("/", async (req, res) => {
   const data = await PageModel.find({});
   res.json(data);
 });
 
 
-// get alle titler
+// get all titles
 pageRouter.get("/titles", async (req, res) =>{
   const data = await PageModel.find({}).select('title -_id')
   console.log("data",data);
@@ -20,7 +20,7 @@ pageRouter.get("/titles", async (req, res) =>{
 
 
 
-// get én side ud fra title
+// get one page by title
 pageRouter.get("/:title", async (req, res) => {
   const title = req.params.title;
   console.log("find this title:",title);
@@ -47,7 +47,7 @@ pageRouter.patch("/", async (req, res) => {
     const updatedPage = await PageModel.findOneAndUpdate(
       { title: updateData.title },
       { body: updateData.body, lastUpdated: new Date() },
-      { new: true }
+      { returnOriginal: false }
     );
 
     if (!updatedPage) {
@@ -59,23 +59,23 @@ pageRouter.patch("/", async (req, res) => {
   }
 });
 
-// KUN TIL DEV BRUG
-pageRouter.post("/", async (req, res) => {
-  // console.log("POSTING NEW PAGE");
-  console.log("BODY", req.body);
-  const data = req.body;
-  const newPage = new PageModel({
-    title: data.title,
-    body: data.body,
-  });
-  try {
-    newPage.save().then(savedPage => {
-      console.log("page saved", savedPage);
-      res.json(savedPage);
-    });
-  } catch (error) {
-    res.json(error);
-  }
-});
+// // KUN TIL DEV BRUG
+// pageRouter.post("/", async (req, res) => {
+//   // console.log("POSTING NEW PAGE");
+//   console.log("BODY", req.body);
+//   const data = req.body;
+//   const newPage = new PageModel({
+//     title: data.title,
+//     body: data.body,
+//   });
+//   try {
+//     newPage.save().then(savedPage => {
+//       console.log("page saved", savedPage);
+//       res.json(savedPage);
+//     });
+//   } catch (error) {
+//     res.json(error);
+//   }
+// });
 
 export default pageRouter;

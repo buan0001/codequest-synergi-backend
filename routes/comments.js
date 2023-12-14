@@ -3,7 +3,7 @@ import { UserModel,CommentModel } from "../database.js";
 
 const commentRouter = Router();
 
-// get alle kommentarer tilhørende ét opslag
+// get all comments belonging to one post
 commentRouter.get("/:blogId", async (req, res) => {
     const blogId = req.params.blogId;
   const data = await CommentModel.find({ postID: blogId }, ('-__v')).populate({path:'userID',select:'-__v', model: UserModel}).exec();
@@ -13,7 +13,7 @@ commentRouter.get("/:blogId", async (req, res) => {
 });
 
 
-// post én blog post
+// post one comment belonging to one post
 commentRouter.post("/", async (req, res) => {
   const data = req.body;
   console.log("creating comment with this body:", data);
