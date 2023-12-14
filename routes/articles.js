@@ -67,7 +67,7 @@ articleRouter.patch("/", async (req, res) => {
   console.log("patching article with this body:", updateData);
 
   try {
-    const updatedArticle = await ArticleModel.findOneAndUpdate({ _id: updateData._id }, updateData, { new: true });
+    const updatedArticle = await ArticleModel.findOneAndUpdate({ _id: updateData._id }, updateData, { returnOriginal: false });
     console.log("updated article:",updatedArticle);
     if (!updatedArticle) {
       return res.status(404).json({ message: "Document not found - and not Updated" });

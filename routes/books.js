@@ -18,7 +18,7 @@ bookRouter.get("/:bookId", async (req, res) => {
     const result = await BookModel.findOne({ _id: ID });
 
     if (!result) {
-      return res.status(404).json({ message: `Data not found for Booktitle: ${ID}` });
+      return res.status(404).json({ message: `Data not found for book id: ${ID}` });
     }
     console.log("result from getting one book:",result);
     res.json(result);
@@ -61,7 +61,7 @@ bookRouter.patch("/", async (req, res) => {
   const updateData = req.body;
 
   try {
-    const updatedBook = await BookModel.findOneAndUpdate({ title: updateData.pageTitle }, updateData.resume, { new: true });
+    const updatedBook = await BookModel.findOneAndUpdate({ _id: updateData._id }, updateData, {returnOriginal: false});
 
     if (!updatedBook) {
       return res.status(404).json({ message: "Document not found - and not Updated" });
@@ -73,10 +73,10 @@ bookRouter.patch("/", async (req, res) => {
 });
 
 bookRouter.delete("/:bookId", async (req, res) => {
-  const bookTitle = req.params.bookTitle;
+  const bookId = req.params.bookId;
 
   try {
-    const deleteBook = await BookModel.findOneAndDelete({ title: bookTitle });
+    const deleteBook = await BookModel.findOneAndDelete({ _id: bookId });
 
     if (!deleteBook) {
       return res.status(404).json({ message: "Document not found - and not Deleted" });
