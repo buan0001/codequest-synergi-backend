@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
+import "dotenv/config"
 
-// connect to mongoDB
-// test
-mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/codequest-synergi").then(() =>console.log("Connected to mongoDB!")).catch((err) =>console.error("Error connecting to server",err))
-// mongoose.set('debug',true)
-// mongoose.connect("mongodb+srv://buan0001:qwer1234@buan-test.lxx9cgs.mongodb.net/synergiTest");
+mongoose.connect(process.env.MONGO_CONNECTION).then(() =>console.log("Connected to mongoDB!")).catch((err) =>console.error("Error connecting to server",err))
 
 const pageSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -15,7 +12,6 @@ const pageSchema = new mongoose.Schema({
 
 const publishedSchema = new mongoose.Schema({
   title: { type: String, required: true, unique: true },
-  // release: { type: Date, required: true },
   releaseYear: { type: Number, required: true },
   publisher: { type: String, required: true },
   authors: {
@@ -55,7 +51,6 @@ const blogSchema = new mongoose.Schema({
   commentsAllowed: { type: Boolean, required: true },
   createdAt: { type: Date, default: new Date(), immutable: true },
   lastUpdated: { type: Date, default: new Date() },
-  // comments: [{type: mongoose.Types.ObjectId, ref: './database.js/CommentModel'}] , // reference to the specific comment
 });
 
 const userSchema = new mongoose.Schema({
@@ -73,14 +68,15 @@ const commentSchema = new mongoose.Schema({
 });
 
 console.log("registering all models");
+
 const UserModel = mongoose.model("user", userSchema);
 const CommentModel = mongoose.model("comment", commentSchema);
 const BlogModel = mongoose.model("blog", blogSchema);
-
 const PageModel = mongoose.model("page", pageSchema);
 const BookModel = mongoose.model("book", publishedSchema);
 const ArticleModel = mongoose.model("article", publishedSchema);
 const OneDayBookingModel = mongoose.model("booking", oneDayBookingSchema);
+
 console.log("all models registered");
 
 export { PageModel, BookModel, ArticleModel, OneDayBookingModel, BlogModel,UserModel, CommentModel,  };

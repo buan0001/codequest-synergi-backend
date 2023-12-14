@@ -31,7 +31,7 @@ pageRouter.get("/:title", async (req, res) => {
     if (!result) {
       return res.status(404).json({ message: `Data not found for title: ${title}` });
     }
-    console.log("body:", result.body);
+    // console.log("body:", result.body);
     console.log("body length:", result.body.length);
     res.json(result);
   } catch (err) {
@@ -79,14 +79,3 @@ pageRouter.post("/", async (req, res) => {
 });
 
 export default pageRouter;
-
-
-
-// route til at ændre skema, hvis det skulle blive nødvendigt
-
-// pageRouter.get("/body", async (req, res) => {
-//   console.log("getting titles");
-//   const page = await PageModel.updateMany({}, {$rename:{body: "body"}});
-//   console.log("success?",page);
-//   res.json(page);
-// });
